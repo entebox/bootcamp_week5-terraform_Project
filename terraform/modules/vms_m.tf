@@ -1,65 +1,29 @@
-# Create the NICs for the websrv VMs
-resource "azurerm_network_interface" "web_nic" {
-  name                = var.websrv_nic_name[count.index]
+#------------------------------------------Creating the VMs------------------------------------------#
+# Create the NICs for the VMs
+resource "azurerm_network_interface" "nic" {
+  name                = "nic-${var.vm_type}-${var.modu_ind}"
   location            = var.location
-  resource_group_name = var.resource_group
+  resource_group_name = var.resource_group_name
 
   ip_configuration {
-    name                          = var.websrv_ip_internal_name[count.index]
+    name                          = var.vm_type == "websrv" ? "web_ip_conf" : "postgres_ip_conf"
     private_ip_address_allocation = "Dynamic"
-    subnet_id                     = azurerm_subnet.subnet[0].id
-    public_ip_address_id          = azurerm_public_ip.webpublicip[count.index].id
-  }
-  count = length(var.websrv_nic_name)
-}
-
-
-# creating the web server 1
-resource "azurerm_virtual_machine" "websrv1" {
-  name                  = "websrv1"
-  location              = var.location
-  resource_group_name   = var.resource_group_name
-  network_interface_ids = [azurerm_network_interface.web_nic[0].id]
-  availability_set_id   = azurerm_availability_set.avset.id
-  vm_size               = var.srvvm_size
-
-  storage_os_disk {
-    name              = var.websrv_os_disk_name[0]
-    caching           = "ReadWrite"
-    create_option     = "FromImage"
-    managed_disk_type = var.managed_disk_type
-  }
-
-  storage_image_reference {
-    publisher = "canonical"
-    offer     = "0001-com-ubuntu-server-focal"
-    sku       = "20_04-lts-gen2"
-    version   = "latest"
-  }
-
-  os_profile {
-    computer_name  = var.srv_vmname[0]
-    admin_username = var.username
-    admin_password = var.password
-  }
-
-  os_profile_linux_config {
-    disable_password_authentication = false
+    subnet_id                     = var.subnet_name
   }
 }
 
-# creating the web server 2
-resource "azurerm_virtual_machine" "websrv2" {
-  name                  = "websrv2"
+# creating the servers
+resource "azurerm_virtual_machine" "vm" {
+  name                  = "${var.vm_name}-${var.vm_type}-${var.modu_ind}"
   location              = var.location
   resource_group_name   = var.resource_group_name
-  network_interface_ids = [azurerm_network_interface.web_nic[1].id]
-  availability_set_id   = azurerm_availability_set.avset.id
+  network_interface_ids = [element(azurerm_network_interface.nic.*.id, var.modu_ind)]
+  availability_set_id   = var.vm_type == "websrv" ? var.avset : ""
   vm_size               = var.srvvm_size
 
   # creating the os disk
   storage_os_disk {
-    name              = var.websrv_os_disk_name[1]
+    name              = "osdisk-${var.vm_type}${var.modu_ind}"
     caching           = "ReadWrite"
     create_option     = "FromImage"
     managed_disk_type = var.managed_disk_type
@@ -73,44 +37,9 @@ resource "azurerm_virtual_machine" "websrv2" {
   }
 
   os_profile {
-    computer_name  = var.srv_vmname[1]
-    admin_username = var.username
-    admin_password = var.password
-  }
-
-  os_profile_linux_config {
-    disable_password_authentication = false
-  }
-}
-
-# creating the web server 3
-resource "azurerm_virtual_machine" "websrv3" {
-  name                  = "websrv3"
-  location              = var.location
-  resource_group_name   = var.resource_group_name
-  network_interface_ids = [azurerm_network_interface.web_nic[2].id]
-  availability_set_id   = azurerm_availability_set.avset.id
-  vm_size               = var.srvvm_size
-
-  # creating the os disk
-  storage_os_disk {
-    name              = var.websrv_os_disk_name[2]
-    caching           = "ReadWrite"
-    create_option     = "FromImage"
-    managed_disk_type = var.managed_disk_type
-  }
-
-  storage_image_reference {
-    publisher = "canonical"
-    offer     = "0001-com-ubuntu-server-focal"
-    sku       = "20_04-lts-gen2"
-    version   = "latest"
-  }
-
-  os_profile {
-    computer_name  = var.srv_vmname[2]
-    admin_username = var.username
-    admin_password = var.password
+    computer_name  = var.vm_type == "websrv" ? "websrv${var.modu_ind}" : "postgsrv"
+    admin_username = var.admin_username
+    admin_password = var.admin_password
   }
 
   os_profile_linux_config {

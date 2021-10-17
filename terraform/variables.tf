@@ -1,22 +1,10 @@
 #the resource group
-variable "resource_group" {
+variable "resource_group_name" {
   default = "week5-basic-project"
 }
 #the zone location
 variable "location" {
   default = "eastus2"
-}
-
-variable "vm_type" {
-
-}
-
-variable "vm_name" {
-  
-}
-
-variable "vm_type" {
-  
 }
 
 variable "webvm_num" {
@@ -34,7 +22,7 @@ variable "address_space" {
 }
 #the subnets
 variable "subnet_name" {
-  type    = list(string)
+  type    = any
   default = ["frontendSubnet", "backendSubnet"]
 }
 #subnet prefixes
@@ -57,16 +45,13 @@ variable "postgressrv_os_disk_name" {
   type    = list(string)
   default = ["postgressrv_os_disk"]
 }
+
 #web server internal ip name
 variable "websrv_ip_internal_name" {
   type    = list(string)
   default = ["webSrv1_internal_ip", "webSrv2_internal_ip", "webSrv3_internal_ip"]
 }
-#postgres server internal ip name
-variable "postgressrv_ip_internal_name" {
-  type    = list(string)
-  default = ["postgressrv_inetrnal_ip"]
-}
+
 #web servers public ip name
 variable "ip_public_name" {
   type    = list(string)
@@ -85,11 +70,7 @@ variable "LB_frontend_conf_name" {
 variable "availability_set_name" {
   default = "avset_websrvs"
 }
-#name of web servers
-variable "srv_vmname" {
-  type    = list(string)
-  default = ["webSrv1", "webSrv2", "webSrv3"]
-}
+
 #size of the VMs
 variable "srvvm_size" {
   default = "Standard_B1ls"
@@ -112,4 +93,19 @@ variable "nsg_dst_port_num_websrvs" {
 variable "nsg_rule_name" {
   type    = list(string)
   default = ["SSH", "TCP_8080"]
+}
+
+variable "websrvs_quantity" {
+  type        = number
+  default = 3
+}
+
+variable "postgsrv_quantity" {
+  type        = number
+  default = 1
+}
+
+variable "vm_name" {
+  type    = string
+  default = "webSrv"
 }

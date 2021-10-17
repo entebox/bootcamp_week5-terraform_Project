@@ -1,10 +1,10 @@
-variable "username" {
+variable "admin_username" {
   description = "vm user name"
   type        = string
   default = "aviberger"
   sensitive = true
 }
-variable "password" {
+variable "admin_password" {
   description = "vm password"
   type        = string
   default = "Passw0rd1234!"

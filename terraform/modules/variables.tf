@@ -1,5 +1,5 @@
 #the resource group
-variable "resource_group" {
+variable "resource_group_name" {
   default = "week5-basic-project"
 }
 #the zone location
@@ -16,7 +16,7 @@ variable "address_space" {
 }
 #the subnets
 variable "subnet_name" {
-  type    = list(string)
+  type    = any
   default = ["frontendSubnet", "backendSubnet"]
 }
 #subnet prefixes
@@ -26,8 +26,8 @@ variable "subnet_prefix" {
 }
 #web servers nics
 variable "websrv_nic_name" {
-  type    = list(string)
-  default = ["webSrv1_nic", "webSrv2_nic", "webSrv3_nic"]
+  type    = string
+  default = "webSrv_nic"
 }
 #postgres server nic
 variable "postgressrv_nic_name" {
@@ -64,13 +64,13 @@ variable "LB_frontend_conf_name" {
   default = "LBPublicIPAddres"
 }
 #availability set name
-variable "availability_set_name" {
-  default = "avset_websrvs"
+variable "avset" {
+  type = string
 }
 #name of web servers
-variable "srv_vmname" {
-  type    = list(string)
-  default = ["webSrv1", "webSrv2", "webSrv3"]
+variable "vm_name" {
+  type    = string
+  default = "webSrv"
 }
 #size of the VMs
 variable "srvvm_size" {
@@ -94,4 +94,12 @@ variable "nsg_dst_port_num_websrvs" {
 variable "nsg_rule_name_websrvs" {
   type    = list(string)
   default = ["SSH", "TCP_8080"]
+}
+
+variable "vm_type" {
+  type = string
+}
+
+variable "modu_ind" {
+  type    = number
 }
