@@ -12,6 +12,7 @@ resource "azurerm_public_ip" "webpublicip" {
   allocation_method   = "Dynamic"
   sku                 = "Basic"
   count               = length(var.ip_public_name)
+  depends_on          = [azurerm_resource_group.rg]
 }
 
 # Create the subnets for the env
@@ -109,6 +110,7 @@ resource "azurerm_availability_set" "avset" {
   name                = var.availability_set_name
   location            = var.location
   resource_group_name = var.resource_group_name
+  depends_on          = [azurerm_resource_group.rg]
 }
 
 # create NSG rules for web servers
@@ -120,7 +122,7 @@ resource "azurerm_network_security_rule" "NS_rules_for_websrvs" {
   protocol                    = "Tcp"
   source_port_range           = "*"
   destination_port_range      = var.nsg_dst_port_num_websrvs[count.index] # destination port for each rule
-  source_address_prefix       = var.nsg_rule_name == "SSH" ? var.nsg_source_ip : "*"
+  source_address_prefix       = var.nsg_dst_port_num_websrvs[count.index] == "22" ? var.nsg_source_ip : "*"
   destination_address_prefix  = "*"
   resource_group_name         = var.resource_group_name
   network_security_group_name = azurerm_network_security_group.NSG_for_websrvs.name
@@ -140,7 +142,7 @@ module "vm_websrv" {
   count               = var.websrvs_quantity
   modu_ind            = count.index
   vm_type             = "websrv"
-  vm_name             = "${var.vm_name}-${count.index}"
+  vm_name             = "${var.vm_name}${count.index + 1}"
   srvvm_size          = var.srvvm_size
   location            = var.location
   subnet_name         = azurerm_subnet.subnet[0].id
@@ -149,6 +151,7 @@ module "vm_websrv" {
   admin_password      = var.admin_password
   resource_group_name = var.resource_group_name
   vnet                = var.vnet
+  depends_on          = [azurerm_resource_group.rg]
 }
 
 #module to create vm postgres servers
@@ -158,7 +161,7 @@ module "vm_postgressrv" {
   count               = var.postgsrv_quantity
   modu_ind            = count.index
   vm_type             = "postgres"
-  vm_name             = "postgsrv${count.index}"
+  vm_name             = "postgsrv${count.index + 1}"
   srvvm_size          = var.srvvm_size
   location            = var.location
   subnet_name         = azurerm_subnet.subnet[1].id
@@ -167,4 +170,5 @@ module "vm_postgressrv" {
   admin_password      = var.admin_password
   resource_group_name = var.resource_group_name
   vnet                = var.vnet
+  depends_on          = [azurerm_resource_group.rg]
 }

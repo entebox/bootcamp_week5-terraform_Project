@@ -1,12 +1,12 @@
 #------------------------------------------Creating the VMs------------------------------------------#
 # Create the NICs for the VMs
 resource "azurerm_network_interface" "nic" {
-  name                = "nic-${var.vm_type}-${var.modu_ind}"
+  name                = "nic-${var.vm_type}${var.modu_ind + 1}"
   location            = var.location
   resource_group_name = var.resource_group_name
 
   ip_configuration {
-    name                          = var.vm_type == "websrv" ? "web_ip_conf" : "postgres_ip_conf"
+    name                          = var.vm_type == "websrv" ? "${var.vm_name}_internal_ip" : "postgres_ip_conf"
     private_ip_address_allocation = "Dynamic"
     subnet_id                     = var.subnet_name
   }
@@ -14,7 +14,7 @@ resource "azurerm_network_interface" "nic" {
 
 # creating the servers
 resource "azurerm_virtual_machine" "vm" {
-  name                  = "${var.vm_name}-${var.vm_type}-${var.modu_ind}"
+  name                  = "${var.vm_name}"
   location              = var.location
   resource_group_name   = var.resource_group_name
   network_interface_ids = [element(azurerm_network_interface.nic.*.id, var.modu_ind)]
@@ -23,7 +23,7 @@ resource "azurerm_virtual_machine" "vm" {
 
   # creating the os disk
   storage_os_disk {
-    name              = "osdisk-${var.vm_type}${var.modu_ind}"
+    name              = "osdisk-${var.vm_type}${var.modu_ind + 1}"
     caching           = "ReadWrite"
     create_option     = "FromImage"
     managed_disk_type = var.managed_disk_type
@@ -37,7 +37,7 @@ resource "azurerm_virtual_machine" "vm" {
   }
 
   os_profile {
-    computer_name  = var.vm_type == "websrv" ? "websrv${var.modu_ind}" : "postgsrv"
+    computer_name  = var.vm_type == "websrv" ? "websrv${var.modu_ind + 1}" : "postgsrv"
     admin_username = var.admin_username
     admin_password = var.admin_password
   }
