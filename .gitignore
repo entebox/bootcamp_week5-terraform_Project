@@ -30,3 +30,4 @@ override.tf.json
 variables.tfvars
 .terraform.lock.hcl
 .terraform.tfstate.lock.info
+sensvar.tf
