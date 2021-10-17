@@ -8,7 +8,6 @@ variable "password" {
   description = "vm password"
   type        = string
   default = "Passw0rd1234!"
-  sensitive = true
 }
 variable "nsg_source_ip" {
   default = "213.137.80.32/32"
