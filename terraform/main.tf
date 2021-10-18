@@ -159,7 +159,6 @@ module "vm_websrv" {
   admin_username      = var.admin_username
   admin_password      = random_password.password.result
   resource_group_name = var.resource_group_name
-  vnet                = var.vnet
   depends_on          = [azurerm_resource_group.rg]
 }
 
@@ -178,6 +177,5 @@ module "vm_postgressrv" {
   admin_username      = var.admin_username
   admin_password      = random_password.password.result
   resource_group_name = var.resource_group_name
-  vnet                = var.vnet
   depends_on          = [azurerm_resource_group.rg]
 }
