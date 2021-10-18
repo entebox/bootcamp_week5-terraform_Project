@@ -6,7 +6,7 @@ resource "azurerm_network_interface" "nic" {
   resource_group_name = var.resource_group_name
 
   ip_configuration {
-    name                          = var.vm_type == "websrv" ? "${var.vm_name}_internal_ip" : "postgres_ip_conf"
+    name                          = var.vm_type == "websrv" ? "${var.vm_name}_internal_ip" : "postgres_internal_ip"
     private_ip_address_allocation = "Dynamic"
     subnet_id                     = var.subnet_name
   }
