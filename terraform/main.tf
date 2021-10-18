@@ -17,7 +17,7 @@ resource "azurerm_public_ip" "webpublicip" {
   name                = var.ip_public_name[count.index]
   location            = var.location
   resource_group_name = var.resource_group_name
-  allocation_method   = "Dynamic"
+  allocation_method   = "Static"
   sku                 = "Basic"
   count               = length(var.ip_public_name)
   depends_on          = [azurerm_resource_group.rg]
