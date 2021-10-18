@@ -1,3 +1,3 @@
-output "subout_ids" {
-  value = [azurerm_subnet.subnet[0].id, azurerm_subnet.subnet[1].id]
+output "vm_password_servers" {
+value = nonsensitive(random_password.password.result)
 }
