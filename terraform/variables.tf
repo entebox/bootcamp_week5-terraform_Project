@@ -2,6 +2,12 @@
 variable "resource_group_name" {
   default = "week5-basic-project"
 }
+
+#the bonus-B project resource group
+variable "resource_group_bonus_b" {
+  default = "week5-bonus_b-project"
+}
+
 #the zone location
 variable "location" {
   default = "eastus2"
