@@ -1,6 +1,6 @@
 #the resource group week5 bonus B project
 variable "resource_group_name" {
-  default = "week5-bonus_b-project"
+  default = "week5-basic-project"
 }
 
 #the zone location
@@ -19,7 +19,7 @@ variable "vnet" {
 }
 #the address space
 variable "address_space" {
-  default = "192.168.0.0/16"
+  default = "10.0.0.0/16"
 }
 #the subnets
 variable "subnet_name" {
@@ -29,7 +29,7 @@ variable "subnet_name" {
 #subnet prefixes
 variable "subnet_prefix" {
   type    = list(any)
-  default = ["192.168.1.0/24", "192.168.2.0/24"]
+  default = ["10.0.1.0/24", "10.0.2.0/24"]
 }
 
 #os disk of postgres server
@@ -79,5 +79,5 @@ variable "postgsrv_quantity" {
 
 variable "vm_name" {
   type    = string
-  default = "webSrvB"
+  default = "webSrv"
 }
