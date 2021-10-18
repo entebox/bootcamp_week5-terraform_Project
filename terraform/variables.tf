@@ -1,4 +1,4 @@
-#the resource group
+#the resource group week5 basic project
 variable "resource_group_name" {
   default = "week5-basic-project"
 }
@@ -36,16 +36,7 @@ variable "subnet_prefix" {
   type    = list(any)
   default = ["10.0.1.0/24", "10.0.2.0/24"]
 }
-#web servers nics
-variable "websrv_nic_name" {
-  type    = list(string)
-  default = ["webSrv1_nic", "webSrv2_nic", "webSrv3_nic"]
-}
-#postgres server nic
-variable "postgressrv_nic_name" {
-  type    = list(string)
-  default = ["postgressrv_nic"]
-}
+
 #os disk of postgres server
 variable "postgressrv_os_disk_name" {
   type    = list(string)
@@ -81,11 +72,7 @@ variable "availability_set_name" {
 variable "srvvm_size" {
   default = "Standard_B1ls"
 }
-#web servers os disk names
-variable "websrv_os_disk_name" {
-  type    = list(string)
-  default = ["webSrv1_osdisk1", "webSrv2_osdisk", "webSrv3_osdisk"]
-}
+
 #disk type
 variable "managed_disk_type" {
   default = "StandardSSD_LRS"
