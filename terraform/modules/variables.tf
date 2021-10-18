@@ -21,7 +21,7 @@ variable "avset" {
 #name of web servers
 variable "vm_name" {
   type    = string
-  default = "webSrv"
+  default = "webSrvB"
 }
 #size of the VMs
 variable "srvvm_size" {
