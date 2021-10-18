@@ -7,7 +7,7 @@ build an environment with terraform on Azure.
 this terraform project will create 3 servers 
 (planned to be web servers), behind Load Balancer, connected into isolated postgres server. 
 
-<img src= week-4-project-env.png>
+<img src= images/week-4-project-env.png>
 
 ## Installation
 
