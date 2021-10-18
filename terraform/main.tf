@@ -3,6 +3,14 @@ resource "azurerm_resource_group" "rg" {
   name     = var.resource_group_name
   location = var.location
 }
+
+#-------------------------------------------Random password--------------------------------------------#
+resource "random_password" "password" {
+  length           = 10
+  special          = true
+  override_special = "_%@"
+}
+
 #--------------------------------------------Network Section--------------------------------------------#
 # Create the public ip for the web VMs
 resource "azurerm_public_ip" "webpublicip" {
@@ -135,7 +143,8 @@ resource "azurerm_subnet_network_security_group_association" "sub_nsg_asso_for_w
   network_security_group_id = azurerm_network_security_group.NSG_for_websrvs.id
 }
 
-#module to create vm web servers
+#------------------------modules to create vm web servers-----------------------#
+
 module "vm_websrv" {
   source = "./modules"
 
@@ -148,7 +157,7 @@ module "vm_websrv" {
   subnet_name         = azurerm_subnet.subnet[0].id
   avset               = azurerm_availability_set.avset.id
   admin_username      = var.admin_username
-  admin_password      = var.admin_password
+  admin_password      = random_password.password.result
   resource_group_name = var.resource_group_name
   vnet                = var.vnet
   depends_on          = [azurerm_resource_group.rg]
@@ -167,7 +176,7 @@ module "vm_postgressrv" {
   subnet_name         = azurerm_subnet.subnet[1].id
   avset               = azurerm_availability_set.avset.id
   admin_username      = var.admin_username
-  admin_password      = var.admin_password
+  admin_password      = random_password.password.result
   resource_group_name = var.resource_group_name
   vnet                = var.vnet
   depends_on          = [azurerm_resource_group.rg]
