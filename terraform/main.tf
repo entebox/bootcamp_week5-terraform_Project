@@ -14,12 +14,12 @@ resource "random_password" "password" {
 #--------------------------------------------Network Section--------------------------------------------#
 # Create the public ip for the web VMs
 resource "azurerm_public_ip" "webpublicip" {
-  name                = var.ip_public_name[count.index]
+  name                = "webSrv_public_ip${count.index + 1}"
   location            = var.location
   resource_group_name = var.resource_group_name
   allocation_method   = "Static"
   sku                 = "Basic"
-  count               = length(var.ip_public_name)
+  count               = var.websrvs_quantity
   depends_on          = [azurerm_resource_group.rg]
 }
 
@@ -74,10 +74,10 @@ resource "azurerm_lb_backend_address_pool" "backend_add_pool" {
 # creating the load balancer backend address pool association to the nics of the web servers
 resource "azurerm_network_interface_backend_address_pool_association" "websrvs_nic_asso" {
   network_interface_id    = module.vm_websrv.*.nic_ids[count.index].id
-  ip_configuration_name   = var.websrv_ip_internal_name[count.index]
+  ip_configuration_name   = "${var.vm_name}${count.index + 1}_internal_ip"
   backend_address_pool_id = azurerm_lb_backend_address_pool.backend_add_pool.id
-  depends_on              = [azurerm_lb_backend_address_pool.backend_add_pool, azurerm_lb.Websrv_LB]
-  count                   = length(var.LB_ip_conf_name)
+  depends_on              = [ azurerm_lb_backend_address_pool.backend_add_pool, azurerm_lb.Websrv_LB, module.vm_websrv]
+  count                   = var.websrvs_quantity
 }
 
 # creating load balancer probe for port 8080
